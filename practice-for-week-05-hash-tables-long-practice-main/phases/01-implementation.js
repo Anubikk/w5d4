@@ -19,6 +19,7 @@ class HashTable { // get O(1), set O(1), deleteKey O(1)
 
     for (let i = 0; i < key.length; i++) {
       hashValue += key.charCodeAt(i);
+      // console.log(key)
     }
 
     return hashValue;
@@ -31,6 +32,7 @@ class HashTable { // get O(1), set O(1), deleteKey O(1)
 
 
   insert(key, value) {
+    if (this.count / this.capacity > 0.5) this.resize(); //load factor
     const index = this.hashMod(key);
     let pair = this.data[index];
 
@@ -54,19 +56,60 @@ class HashTable { // get O(1), set O(1), deleteKey O(1)
 
 
   read(key) {
-    // Your code here
+  const index = this.hashMod(key);
+  let pair = this.data [index]
+  while(pair) {
+    if (pair.key === key) {
+      return pair.value
+    }
+    pair = pair.next
+    }
   }
 
 
   resize() {
-    // Your code here
+   //save the old data
+   //double the capacity
+   //need to refill new empty space with null
+   //reset your count
+
+   const oldData = this.data;
+   this.capacity *= 2;
+   this.data = new Array(this.capacity).fill(null);
+   this.count = 0;
+    let pair = null;
+   for (let i = 0; i < oldData.length; i++) {
+    pair = oldData[i];
+    while (pair) {
+      this.insert(pair.key, pair.value);
+      pair = pair.next;
+    }
+   }
   }
 
 
   delete(key) {
-    // Your code here
+   const index = this.hashMod(key); //get index of buc
+   let pair = this.data[index]; //get keyval at idx
+   let last = null; //creating new keyval
+   while(pair && pair.key !== key) { //while there is a keyval
+    last = pair; //save the last keyval pair
+    pair = last.next; //move to the next key val pair
+   }
+   if (!pair) { //if no key val pair return string
+    return "Key not found"
+   } else {
+    if (!last) { //if in the front
+      this.data[index] = pair.next; //update bucket to point the next keyval
+    } else { //if not in the front
+      last.next = pair.next // update to previous pair to point to the next pair
+    }
+    this.count -- //decrement count
+   }
+
   }
 }
+
 
 
 module.exports = HashTable;
