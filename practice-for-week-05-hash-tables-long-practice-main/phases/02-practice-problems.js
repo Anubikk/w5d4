@@ -1,10 +1,13 @@
 function anagrams(str1, str2) {
-  // Your code here
+  let strsplit1 = str1.split('').sort().join('')
+  let strsplit2 = str2.split('').sort().join('')
+  return strsplit1 === strsplit2
 }
 
 
 function commonElements(arr1, arr2) {
-  // Your code here
+  const setArray = new Set(arr1);
+  return arr2.filter(common => setArray.has(common))
 }
 
 
